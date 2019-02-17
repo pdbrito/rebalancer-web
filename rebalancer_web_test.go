@@ -8,24 +8,28 @@ import (
 )
 
 func TestHealthcheckHandler(t *testing.T) {
-	req, err := http.NewRequest(http.MethodGet, "/health-check", nil)
+	w := httptest.NewRecorder()
+	r, err := http.NewRequest(http.MethodGet, "", nil)
+
 	if err != nil {
-		t.Error(err)
+		t.Errorf("http.NewRequest() err = %s, want nil", err)
 	}
 
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(HealthCheckHandler)
+	HealthCheckHandler(w, r)
 
-	handler.ServeHTTP(rr, req)
-
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
-	}
-
-	want := `{"alive": true}`
-	if rr.Body.String() != want {
-		t.Errorf("handler returned wrong body: got %s want %s",
-			rr.Body.String(), want)
-	}
+	t.Run("successful response", func(t *testing.T) {
+		t.Run("returns 200 OK", func(t *testing.T) {
+			if status := w.Code; status != http.StatusOK {
+				t.Errorf("handler returned wrong status code: got %v want %v",
+					status, http.StatusOK)
+			}
+		})
+		t.Run("body contains expected json", func(t *testing.T) {
+			want := `{"alive": true}`
+			if w.Body.String() != want {
+				t.Errorf("handler returned wrong body: got %s want %s",
+					w.Body.String(), want)
+			}
+		})
+	})
 }
