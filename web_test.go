@@ -25,7 +25,7 @@ func TestHealthcheckHandler(t *testing.T) {
 			}
 		})
 		t.Run("body contains expected json", func(t *testing.T) {
-			want := `{"alive": true}`
+			want := `{"alive":true}`
 			if w.Body.String() != want {
 				t.Errorf("handler returned wrong body: got %s want %s",
 					w.Body.String(), want)
