@@ -1,7 +1,7 @@
 package rebalancerweb_test
 
 import (
-	. "github.com/pdbrito/rebalancer-web"
+	. "github.com/pdbrito/rebalancer-web/http"
 	"net/http"
 	"net/http/httptest"
 	"testing"

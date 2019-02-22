@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/pdbrito/rebalancer-web"
+	"github.com/pdbrito/rebalancer-web/http"
 	"log"
 )
 
