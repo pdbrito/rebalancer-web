@@ -6,5 +6,6 @@ import (
 )
 
 func main() {
-	log.Fatal(rebalancerweb.StartServer())
+	server := rebalancerweb.NewServer()
+	log.Fatal(server.ListenAndServe())
 }
