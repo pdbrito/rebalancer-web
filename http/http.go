@@ -12,10 +12,9 @@ func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, `{"alive":true}`)
 }
 
-// StartServer will pass HTTP requests made on localhost:8080 through our router
-func StartServer() error {
+// NewServer returns a *http.Server ready to serve our routes over http
+func NewServer() *http.Server {
 	router := http.NewServeMux()
 	router.HandleFunc("/healthcheck", HealthCheckHandler)
-	s := &http.Server{Addr: "localhost:8080", Handler: router}
-	return s.ListenAndServe()
+	return &http.Server{Addr: "localhost:8080", Handler: router}
 }
