@@ -12,3 +12,14 @@ Feature: Serving the rebalancer api
       "alive":true
     }
     """
+
+  Scenario: Getting the current pricelist
+    When I make a "GET" request to "/pricelist"
+    Then the response code should be 200
+    And the response should match json:
+    """
+    {
+      "ETH": 200,
+      "BTC": 5000
+    }
+    """
