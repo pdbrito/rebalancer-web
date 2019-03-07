@@ -3,6 +3,7 @@ package rebalancerweb
 import (
 	"encoding/json"
 	"github.com/pdbrito/rebalancer"
+	"github.com/pdbrito/rebalancer-web/pricelist"
 	"io"
 	"net/http"
 )
@@ -21,9 +22,9 @@ func pricelistHandler(pricelist rebalancer.Pricelist) http.HandlerFunc {
 }
 
 // NewServer returns a *http.Server ready to serve our routes over http
-func NewServer(pricelist rebalancer.Pricelist) *http.Server {
+func NewServer(pricelister pricelist.GetPricelist) *http.Server {
 	router := http.NewServeMux()
 	router.HandleFunc("/healthcheck", healthCheckHandler)
-	router.HandleFunc("/pricelist", pricelistHandler(pricelist))
+	router.HandleFunc("/pricelist", pricelistHandler(pricelister()))
 	return &http.Server{Addr: "localhost:8080", Handler: router}
 }

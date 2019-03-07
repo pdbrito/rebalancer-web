@@ -8,10 +8,12 @@ import (
 )
 
 func main() {
-	pricelist := rebalancer.Pricelist{
-		"ETH": decimal.NewFromFloat(200),
-		"BTC": decimal.NewFromFloat(5000),
+	pricelister := func() rebalancer.Pricelist {
+		return rebalancer.Pricelist{
+			"ETH": decimal.NewFromFloat(200),
+			"BTC": decimal.NewFromFloat(5000),
+		}
 	}
-	server := rebalancerweb.NewServer(pricelist)
+	server := rebalancerweb.NewServer(pricelister)
 	log.Fatal(server.ListenAndServe())
 }

@@ -16,7 +16,11 @@ func TestNewServer(t *testing.T) {
 		"BTC": decimal.NewFromFloat(5000),
 	}
 
-	s := NewServer(pricelist)
+	pricelister := func() rebalancer.Pricelist {
+		return pricelist
+	}
+
+	s := NewServer(pricelister)
 
 	t.Run("handles request to /healtcheck", func(t *testing.T) {
 		w := httptest.NewRecorder()
