@@ -1,7 +1,6 @@
 package rebalancerweb_test
 
 import (
-	"encoding/json"
 	"github.com/pdbrito/rebalancer"
 	. "github.com/pdbrito/rebalancer-web/http"
 	"github.com/shopspring/decimal"
@@ -11,13 +10,11 @@ import (
 )
 
 func TestNewServer(t *testing.T) {
-	pricelist := rebalancer.Pricelist{
-		"ETH": decimal.NewFromFloat(200),
-		"BTC": decimal.NewFromFloat(5000),
-	}
-
 	pricelister := func() rebalancer.Pricelist {
-		return pricelist
+		return rebalancer.Pricelist{
+			"ETH": decimal.NewFromFloat(200),
+			"BTC": decimal.NewFromFloat(5000),
+		}
 	}
 
 	s := NewServer(pricelister)
@@ -50,11 +47,6 @@ func TestNewServer(t *testing.T) {
 		w := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/pricelist", nil)
 
-		pricelist := rebalancer.Pricelist{
-			"ETH": decimal.NewFromFloat(200),
-			"BTC": decimal.NewFromFloat(5000),
-		}
-
 		s.Handler.ServeHTTP(w, r)
 
 		t.Run("successful response", func(t *testing.T) {
@@ -65,10 +57,7 @@ func TestNewServer(t *testing.T) {
 				}
 			})
 			t.Run("body contains expected json", func(t *testing.T) {
-				want, err := json.Marshal(pricelist)
-				if err != nil {
-					t.Errorf("error marshalling pricelist: %s", err)
-				}
+				want := `{"BTC":"5000","ETH":"200"}`
 				if w.Body.String() != string(want) {
 					t.Errorf("handler returned wrong body: got '%s' want '%s'",
 						w.Body.String(), want)
