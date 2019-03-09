@@ -9,15 +9,15 @@ import (
 	"testing"
 )
 
-func TestNewServer(t *testing.T) {
-	pricelister := func() rebalancer.Pricelist {
-		return rebalancer.Pricelist{
-			"ETH": decimal.NewFromFloat(200),
-			"BTC": decimal.NewFromFloat(5000),
-		}
+func testGetPricelist() rebalancer.Pricelist {
+	return rebalancer.Pricelist{
+		"ETH": decimal.NewFromFloat(200),
+		"BTC": decimal.NewFromFloat(5000),
 	}
+}
 
-	s := NewServer(pricelister)
+func TestNewServer(t *testing.T) {
+	s := NewServer(testGetPricelist)
 
 	t.Run("handles request to /healtcheck", func(t *testing.T) {
 		w := httptest.NewRecorder()
