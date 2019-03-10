@@ -1,4 +1,4 @@
-package pricelist
+package domain
 
 import "github.com/pdbrito/rebalancer"
 
