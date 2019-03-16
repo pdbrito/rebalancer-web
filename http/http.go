@@ -1,20 +1,30 @@
 package rebalancerweb
 
 import (
+	"encoding/json"
+	"github.com/pdbrito/rebalancer"
+	"github.com/pdbrito/rebalancer-web/domain"
 	"io"
 	"net/http"
 )
 
-// HealthCheckHandler returns a HTTP 200 response along with a json object
-// indicating liveness.
-func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+func healthCheckHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	io.WriteString(w, `{"alive":true}`)
 }
 
+func pricelistHandler(pricelist rebalancer.Pricelist) http.HandlerFunc {
+	b, _ := json.Marshal(pricelist)
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		io.WriteString(w, string(b))
+	}
+}
+
 // NewServer returns a *http.Server ready to serve our routes over http
-func NewServer() *http.Server {
+func NewServer(pricelister domain.GetPricelist) *http.Server {
 	router := http.NewServeMux()
-	router.HandleFunc("/healthcheck", HealthCheckHandler)
+	router.HandleFunc("/healthcheck", healthCheckHandler)
+	router.HandleFunc("/pricelist", pricelistHandler(pricelister()))
 	return &http.Server{Addr: "localhost:8080", Handler: router}
 }

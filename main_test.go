@@ -13,6 +13,28 @@ import (
 	"time"
 )
 
+type RequestContext struct {
+	response struct {
+		code int
+		body []byte
+	}
+}
+
+func FeatureContext(s *godog.Suite) {
+
+	context := &RequestContext{}
+
+	s.Step(`^the api server is running`,
+		theAPIServerIsRunning)
+	s.Step(`^I make a "(GET|POST|PUT|DELETE)" request to "([^"]*)"$`,
+		context.iMakeARequestTo)
+	s.Step(`^the response code should be (\d+)$`,
+		context.theResponseCodeShouldBe)
+	s.Step(`^the response should match json:$`,
+		context.theResponseShouldMatchJSON)
+
+}
+
 func TestMain(m *testing.M) {
 	status := godog.RunWithOptions("godog", func(s *godog.Suite) {
 		FeatureContext(s)
@@ -26,13 +48,6 @@ func TestMain(m *testing.M) {
 		status = st
 	}
 	os.Exit(status)
-}
-
-type RequestContext struct {
-	response struct {
-		code int
-		body []byte
-	}
 }
 
 func theAPIServerIsRunning() error {
@@ -82,19 +97,4 @@ func (rc *RequestContext) theResponseShouldMatchJSON(want *gherkin.DocString) (e
 			expected, rc.response.body)
 	}
 	return nil
-}
-
-func FeatureContext(s *godog.Suite) {
-
-	context := &RequestContext{}
-
-	s.Step(`^the api server is running`,
-		theAPIServerIsRunning)
-	s.Step(`^I make a "(GET|POST|PUT|DELETE)" request to "([^"]*)"$`,
-		context.iMakeARequestTo)
-	s.Step(`^the response code should be (\d+)$`,
-		context.theResponseCodeShouldBe)
-	s.Step(`^the response should match json:$`,
-		context.theResponseShouldMatchJSON)
-
 }

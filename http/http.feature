@@ -19,7 +19,7 @@ Feature: Serving the rebalancer api
     And the response should match json:
     """
     {
-      "ETH": 200,
-      "BTC": 5000
+      "ETH": "200",
+      "BTC": "5000"
     }
     """
