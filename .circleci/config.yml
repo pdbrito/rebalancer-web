@@ -6,6 +6,14 @@ jobs:
       steps:
         - checkout
         - run:
+            name: "Create a temp directory for artifacts"
+            command: |
+              mkdir -p /tmp/artifacts
+        - run:
             name: Run tests
             command: |
-              go test ./... -v
+              go test ./... -v -cover -coverprofile=c.out
+              go tool cover -html=c.out -o coverage.html
+              mv coverage.html /tmp/artifacts
+        - store_artifacts:
+            path: /tmp/artifacts
