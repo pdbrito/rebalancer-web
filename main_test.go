@@ -14,7 +14,8 @@ import (
 )
 
 type RequestContext struct {
-	response struct {
+	serverOnline bool
+	response     struct {
 		code int
 		body []byte
 	}
@@ -25,7 +26,7 @@ func FeatureContext(s *godog.Suite) {
 	context := &RequestContext{}
 
 	s.Step(`^the api server is running`,
-		theAPIServerIsRunning)
+		context.theAPIServerIsRunning)
 	s.Step(`^I make a "(GET|POST|PUT|DELETE)" request to "([^"]*)"$`,
 		context.iMakeARequestTo)
 	s.Step(`^the response code should be (\d+)$`,
@@ -50,8 +51,11 @@ func TestMain(m *testing.M) {
 	os.Exit(status)
 }
 
-func theAPIServerIsRunning() error {
-	go main()
+func (rc *RequestContext) theAPIServerIsRunning() error {
+	if rc.serverOnline == false {
+		go main()
+		rc.serverOnline = true
+	}
 	return nil
 }
 
